@@ -44,7 +44,6 @@ class Play extends Phaser.Scene {
       delay: this.timerDelay, 
       callback: function() {
         this.zoneManager.moveZones();
-        this.updateObstacles();
         this.destroyOldObstacles();
         this.createNewObstacles();
         this.player.updatePlayer();
@@ -58,6 +57,7 @@ class Play extends Phaser.Scene {
   }
 
   update(){
+    this.updateObstacles();
     this.player.getInput();
   }
 
@@ -102,8 +102,8 @@ class Play extends Phaser.Scene {
 
   updateObstacles(){
     for(const obstacle of this.obstacles){
-      obstacle.x -= 32;
-      obstacle.y += 16;
+      obstacle.x -= 2;
+      obstacle.y += 1;
     }
   }
 }
