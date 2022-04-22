@@ -2,17 +2,11 @@ class Player extends Phaser.GameObjects.Sprite{
   constructor(scene, x, y, texture, frame, zones){
     super(scene, x, y, texture, frame);
     scene.add.existing(this);
-    this.zones = zones.zones;
+    this.zones = zones;
     this.currentPos = [2, 4]; // Row (0-4), Column (0-22)
+    this.height = 0;
     this.currentAction = null;
   }
-  /* 
-    TODO:
-    - If player inputs something, should the movement be instant or wait for the interval?
-    - Move player based on neighbor tiles
-    - "Delay" player based on neighbor tiles
-    - Add animations (if there's time)
-  */
 
   getInput(){
     if(Phaser.Input.Keyboard.JustDown(keyLeft) && this.currentPos[0] > 0){
@@ -23,10 +17,24 @@ class Player extends Phaser.GameObjects.Sprite{
     }
   }
 
-  updatePlayer(){
-    if(this.currentAction == "left") this.moveLeft();
-    if(this.currentAction == "right") this.moveRight();
-    // console.log(this.getSurroundingTiles());
+  move(){
+    // Movement depends on surrounding tiles, current tile, and player input
+    let currentTile = this.zones[this.currentPos[0]][this.currentPos[1]];
+    let neighborTiles = this.getSurroundingTiles();
+    if(this.currentAction == "left"){
+      // When going left, check left neighborTile to see if player needs to go up
+      if(neighborTiles[0] == currentTile + 1) this.height++;
+      this.x -= 32;
+      this.y -= 16*(this.height+1);
+      this.currentPos[0]--;
+    }
+    if(this.currentAction == "right"){
+      if(neighborTiles[0] == currentTile + 1) this.height++;
+      this.x += 32;
+      this.y += 16*(this.height+1);
+      this.currentPos[0]++;
+    }
+    this.reset();
   }
 
   // Outputs an array of three elements: The tile to the left, in front, and right of player (Above, right, and down in cartesian plane)
@@ -45,33 +53,7 @@ class Player extends Phaser.GameObjects.Sprite{
     return output;
   }
 
-  getCurrentTile(){
-    
-  }
-
   reset(){
     this.currentAction = null;
-  }
-
-  moveLeft(){
-    this.currentPos[0]--;
-    this.x -= 32;
-    this.y -= 16;
-  }
-
-  moveRight(){
-    this.currentPos[0]++;
-    this.x += 32;
-    this.y += 16;
-  }
-
-  moveDown(){
-  }
-
-  moveUp(){
-  }
-
-  moveBack(){
-
   }
 }
