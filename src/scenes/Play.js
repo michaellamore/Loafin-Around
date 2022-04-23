@@ -14,6 +14,7 @@ class Play extends Phaser.Scene {
   create() {
     // VARIABLES
     this.timerDelay = 1000;
+    this.obstacleSpeed = 40;
     // this.currentDepth = 0;
 
     // Set the keys
@@ -37,14 +38,15 @@ class Play extends Phaser.Scene {
       delay: this.timerDelay, 
       callback: function() {
         this.zoneManager.moveZones();
-
+        
         for(const obstacle of this.obstacles){
-          obstacle.move();
           let destroyed = obstacle.tryToDestroy();
-          if(destroyed){
-            const index = this.obstacles.indexOf(obstacle);
-            this.obstacles.splice(index, 1);
-          }
+          // if(destroyed){
+          //   const index = this.obstacles.indexOf(obstacle);
+          //   this.obstacles.splice(index, 1);
+          // }
+
+          obstacle.updateVariables();
         }
         this.createNewObstacles();
 
@@ -54,10 +56,12 @@ class Play extends Phaser.Scene {
       callbackScope: this
     })
 
-    this.player = new Player(this, 176, 352, 'player', 0, this.zoneManager.zones).setOrigin(0.5);
+    this.player = new Player(this, 272, 304, 'player', 0, this.zoneManager.zones).setOrigin(0.5);
   }
 
-  update(){
+  update(time, delta){
+    // delta is the amount of time in-between update() calls. 
+    for(const obstacle of this.obstacles) obstacle.move(delta/1000); // Convert delta to milliseconds
     this.player.getInput();
   }
 

@@ -3,7 +3,7 @@ class Player extends Phaser.GameObjects.Sprite{
     super(scene, x, y, texture, frame);
     scene.add.existing(this);
     this.zones = zones;
-    this.currentPos = [2, 4]; // Row (0-4), Column (0-22)
+    this.currentPos = [2, 7]; // Row (0-4), Column (0-22)
     this.height = 0;
     this.currentAction = "forward";
   }
