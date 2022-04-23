@@ -6,20 +6,15 @@ class Player extends Phaser.GameObjects.Sprite{
     this.currentPos = [2, 7]; // Row (0-4), Column (0-22)
     this.height = 0;
     this.currentAction = "forward";
+    this.isDead = false;
   }
 
   getInput(){
-    if(Phaser.Input.Keyboard.JustDown(keyLeft) && this.currentPos[0] > 0){
-      this.currentAction = "left";
-    }
-    if(Phaser.Input.Keyboard.JustDown(keyRight) && this.currentPos[0] < 4){
-      this.currentAction = "right";
-    }
-  }
+    if(Phaser.Input.Keyboard.JustDown(keyLeft) && this.currentPos[0] > 0) this.currentAction = "left";
+    if(Phaser.Input.Keyboard.JustDown(keyRight) && this.currentPos[0] < 4) this.currentAction = "right";
+}
 
   checkMovement(){
-    this.setDepth(21 - this.currentPos[1]);
-
     // Movement depends on surrounding tiles, current tile, and player input
     let currentTile = this.zones[this.currentPos[0]][this.currentPos[1]];
     let neighborTiles = this.getSurroundingTiles();
@@ -46,7 +41,9 @@ class Player extends Phaser.GameObjects.Sprite{
     this.x = coords[0];
     this.y = coords[1] - (32*this.height);
 
+    this.setDepth(this.calculateDepth() + (this.height*5));
     this.reset();
+    this.checkOutOfBounds();
   }
 
   // Outputs an array of three elements: The tile to the left, in front, and right of player (Above, right, and down in cartesian plane)
@@ -67,13 +64,18 @@ class Player extends Phaser.GameObjects.Sprite{
 
   reset(){ this.currentAction = "forward"; }
 
+  checkOutOfBounds(){
+    // If the player's column reaches the red zones, DIE
+    if(this.currentPos[1] == 1 || this.currentPos[1] == 20) this.isDead = true;
+  }
+
   // Based on position of player on a grid, convert it into x-y positions;
   gridToCoords(){
     let row = this.currentPos[0];
     let column = this.currentPos[1];
     // These are the coordinates for the very first row/column;
-    let x = -16;
-    let y = 384;
+    let x = -48;
+    let y = 400;
     for(let i=0; i < row; i++){
       x += 32;
       y += 16;
@@ -83,5 +85,14 @@ class Player extends Phaser.GameObjects.Sprite{
       y -= 16;
     }
     return [x, y];
+  }
+  
+  calculateDepth(){
+    let row = this.currentPos[0];
+    let column = this.currentPos[1];
+    let depth = 111; //Arbitrary number
+    for(let i=0; i < row; i++) depth += 1;
+    for(let i=0; i < column; i++) depth -= 5;
+    return depth;
   }
 }

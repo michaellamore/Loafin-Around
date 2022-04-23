@@ -1,0 +1,18 @@
+@font-face{
+  font-family: 'Upheavtt';
+  src: url('../assets/upheavtt.ttf');
+}
+
+canvas{
+  display: block;
+  margin: 94px auto;
+  border: solid rgb(158, 87, 152) 5px;
+  border-radius: 20px;
+}
+
+body{
+  margin: 0 auto;
+  padding: 0;
+  font-family: 'Upheavtt';
+  background-color: #efcef6;
+}

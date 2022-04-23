@@ -50,7 +50,12 @@ class ZoneManager{
     let output = '';
     for(const zone of this.zones){
       let currentZone = '';
-      for(const unit of zone) currentZone += unit;
+      let currentAmount = 0;
+      for(const unit of zone){
+        currentAmount++;
+        if(currentAmount == 23) currentZone += '|';
+        currentZone += unit;
+      }
       currentZone += '\n',
       output += currentZone;
     }

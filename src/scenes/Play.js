@@ -4,18 +4,12 @@ class Play extends Phaser.Scene {
   }
 
   preload(){
-    this.load.path = './assets/';
-    this.load.image('player', 'cubePink.png');
-    this.load.image('obstacle', 'cubeBlue.png');
-    this.load.image('obstacleTall', 'cubeBlueTall.png');
-    this.load.image('platform', 'platform.png');
   }
 
   create() {
+    console.log("In Play Scene");
     // VARIABLES
     this.timerDelay = 1000;
-    this.obstacleSpeed = 40;
-    // this.currentDepth = 0;
 
     // Set the keys
     keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -38,14 +32,15 @@ class Play extends Phaser.Scene {
       delay: this.timerDelay, 
       callback: function() {
         this.zoneManager.moveZones();
-        
         for(const obstacle of this.obstacles){
           let destroyed = obstacle.tryToDestroy();
+          // CAUSES AN ISSUE THAT MAKES SOME OBSTACLES NOT MOVE AT THE VERY END
           // if(destroyed){
           //   const index = this.obstacles.indexOf(obstacle);
           //   this.obstacles.splice(index, 1);
           // }
 
+          // obstacle.moveOLD();
           obstacle.updateVariables();
         }
         this.createNewObstacles();
@@ -56,26 +51,27 @@ class Play extends Phaser.Scene {
       callbackScope: this
     })
 
-    this.player = new Player(this, 272, 304, 'player', 0, this.zoneManager.zones).setOrigin(0.5);
+    this.player = new Player(this, 240, 320, 'player', 0, this.zoneManager.zones).setOrigin(0.5);
   }
 
   update(time, delta){
     // delta is the amount of time in-between update() calls. 
     for(const obstacle of this.obstacles) obstacle.move(delta/1000); // Convert delta to milliseconds
     this.player.getInput();
+    if(this.player.isDead) this.scene.start("gameoverScene");
   }
 
   createNewObstacles(){
     let zones = this.zoneManager.zones
-    let maxNumZones = 23;
+    let column = 22;
     for (let row = 0; row <= 4; row++) {
-      let currentPoint = zones[row][maxNumZones-1];
+      let currentPoint = zones[row][column];
       // Offset includes x and y values in array. Different offsets for different zones. Zones 0-4. 
       let offset = [80-(32*row) , 448 + (16*row)];
 
       // If current point is 0, do nothing
       // If current point is 1, add a 1-cube-tall sprite
-      if(currentPoint == 1) this.obstacles.push(new Obstacle(this, 32*(maxNumZones)-offset[0] , offset[1]-16*(maxNumZones), 'obstacle', 0));
+      if(currentPoint == 1) this.obstacles.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column), 'obstacle', 0, row));
     }
   }
 }

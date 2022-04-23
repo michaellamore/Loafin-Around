@@ -16,7 +16,7 @@ let config = {
       debug: false
     }
   },
-  scene: [Menu, Play]
+  scene: [Menu, Play, Gameover]
 }
 // Load up JSON file that has all obstacles and set it to a global variable
 let availableObstacles;
