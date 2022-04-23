@@ -5,7 +5,7 @@ class Player extends Phaser.GameObjects.Sprite{
     this.zones = zones;
     this.currentPos = [2, 4]; // Row (0-4), Column (0-22)
     this.height = 0;
-    this.currentAction = null;
+    this.currentAction = "forward";
   }
 
   getInput(){
@@ -17,23 +17,35 @@ class Player extends Phaser.GameObjects.Sprite{
     }
   }
 
-  move(){
+  checkMovement(){
+    this.setDepth(21 - this.currentPos[1]);
+
     // Movement depends on surrounding tiles, current tile, and player input
     let currentTile = this.zones[this.currentPos[0]][this.currentPos[1]];
     let neighborTiles = this.getSurroundingTiles();
+    // Moving will change the row and column of the player
     if(this.currentAction == "left"){
-      // When going left, check left neighborTile to see if player needs to go up
-      if(neighborTiles[0] == currentTile + 1) this.height++;
-      this.x -= 32;
-      this.y -= 16*(this.height+1);
       this.currentPos[0]--;
+      this.currentPos[1]--;
+      if (currentTile+1 == neighborTiles[0]) this.height++;
+      if (currentTile-1 == neighborTiles[0]) this.height--;
     }
     if(this.currentAction == "right"){
-      if(neighborTiles[0] == currentTile + 1) this.height++;
-      this.x += 32;
-      this.y += 16*(this.height+1);
       this.currentPos[0]++;
+      this.currentPos[1]--;
+      if (currentTile+1 == neighborTiles[2]) this.height++;
+      if (currentTile-1 == neighborTiles[2]) this.height--;
     }
+    if(this.currentAction == "forward"){
+      if (currentTile+1 == neighborTiles[1]) this.height++;
+      if (currentTile-1 == neighborTiles[1]) this.height--;
+    }
+
+    // After changing the row/column of player, convert it into game coordinates
+    let coords = this.gridToCoords();
+    this.x = coords[0];
+    this.y = coords[1] - (32*this.height);
+
     this.reset();
   }
 
@@ -53,7 +65,23 @@ class Player extends Phaser.GameObjects.Sprite{
     return output;
   }
 
-  reset(){
-    this.currentAction = null;
+  reset(){ this.currentAction = "forward"; }
+
+  // Based on position of player on a grid, convert it into x-y positions;
+  gridToCoords(){
+    let row = this.currentPos[0];
+    let column = this.currentPos[1];
+    // These are the coordinates for the very first row/column;
+    let x = -16;
+    let y = 384;
+    for(let i=0; i < row; i++){
+      x += 32;
+      y += 16;
+    }
+    for(let i=0; i < column; i++){
+      x += 32;
+      y -= 16;
+    }
+    return [x, y];
   }
 }

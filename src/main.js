@@ -4,7 +4,7 @@ let config = {
   height: 480,
   parent: "phaser-canvas",
   pixelArt: true,
-  zoom: 1,
+  zoom: 2,
   fps:{
     target: 60,
     forceSetTimeOut: true

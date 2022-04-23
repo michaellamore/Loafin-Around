@@ -41,6 +41,8 @@ class ZoneManager{
     let newZones = availableObstacles[randomIndex];
     for(let row = 0; row < newZones.length; row++){
       for(const digit of newZones[row]) this.zones[row].push(parseInt(digit));
+      // Add a little buffer after every obstacle
+      this.zones[row].push(0, 0, 0);
     }
   }
 

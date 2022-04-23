@@ -48,13 +48,13 @@ class Play extends Phaser.Scene {
         }
         this.createNewObstacles();
 
-        this.player.move();
+        this.player.checkMovement();
       },
       loop: true,
       callbackScope: this
     })
 
-    this.player = new Player(this, 32*5 - 16, game.config.height - 16*5 - 32, 'player', 0, this.zoneManager.zones).setOrigin(0.5);
+    this.player = new Player(this, 176, 352, 'player', 0, this.zoneManager.zones).setOrigin(0.5);
   }
 
   update(){
