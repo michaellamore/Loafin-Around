@@ -1,0 +1,44 @@
+ObstacleTest:  #Add the key of the obstacle you want to test
+
+# Each obstacle should have a unique key
+obstacle1:
+  - 1, 1, 0
+  - 1, 0, 0
+  - 0, 0, 1
+  - 0, 0, 0
+  - 0, 1, 0
+
+obstacle2:
+  - 2, 1, 0
+  - 0, 0, 0
+  - 1, 2, 1
+  - 0, 0, 0
+  - 1, 0, 0
+
+obstacle3:
+  - 0, 1, 0
+  - 0, 0, 1
+  - 2, 1, 0
+  - 0, 0, 0
+  - 2, 2, 0
+
+obstacle4:
+  - 1, 1, 0
+  - 0, 0, 0
+  - 1, 1, 1
+  - 0, 0, 0
+  - 1, 0, 0
+
+obstacle5:
+  - 2, 0, 0
+  - 0, 0, 0
+  - 1, 2, 1
+  - 0, 0, 0
+  - 1, 0, 2
+
+obstacle6:
+  - 0, 0, 1
+  - 0, 0, 1
+  - 1, 0, 0
+  - 0, 0, 0
+  - 1, 0, 0

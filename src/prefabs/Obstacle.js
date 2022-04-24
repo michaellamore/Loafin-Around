@@ -5,16 +5,18 @@ class Obstacle extends Phaser.GameObjects.Sprite{
     this.setOrigin(0.5);
     this.currentPos = [row, 21]; // X and Y based on a simple grid
     this.targetPos;
+    this.elevation = 0;
+    if(texture == "obstacleTall") this.elevation = 1;
 
     // Variables
-    this.movespeed = 40;
+    this.movespeed = 80;
   }
 
   // Gets called every interval
   updateVariables(){
     this.targetPos = [Math.floor(this.x - 32), Math.floor(this.y + 16)];
     this.currentPos[1]--;
-    this.setDepth(this.calculateDepth());
+    this.setDepth(this.calculateDepth()+ (this.elevation*5));
   }
   tryToDestroy(){
     if(this.x < -32 && this.y > game.config.height + 16){

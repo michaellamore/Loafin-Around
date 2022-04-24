@@ -19,18 +19,13 @@ let config = {
   scene: [Menu, Play, Gameover]
 }
 // Load up JSON file that has all obstacles and set it to a global variable
-let availableObstacles;
-let numOfObstacles = 0;
-async function loadJSON(){
-  let zoneJSON = await fetch("./src/prefabs/AvailableObstacles.json");
-  let zoneTEXT = await zoneJSON.text();
-  availableObstacles = JSON.parse(zoneTEXT);
-  for(const key in availableObstacles) numOfObstacles++;
+let templateObstacles;
+async function loadResources(){
+  let yaml = await fetch("./src/TemplateObstacles.yaml")
+  let yamlText = await yaml.text();
+  templateObstacles = jsyaml.load(yamlText);
 }
-loadJSON();
-
-
-
+loadResources();
 
 let game = new Phaser.Game(config);
 

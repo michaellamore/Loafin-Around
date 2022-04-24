@@ -19,10 +19,11 @@ class Menu extends Phaser.Scene {
     }
 
     this.load.path = './assets/';
-    this.load.image('player', 'cubePink.png');
     this.load.image('obstacle', 'cubeBlue.png');
     this.load.image('obstacleTall', 'cubeBlueTall.png');
     this.load.image('platform', 'platformNew.png');
+    this.load.image('player', 'cubePink.png');
+    this.load.spritesheet('rotateForward', 'cubePinkSheet.png', {frameWidth: 64, frameHeight: 64});
   }
 
   create() {

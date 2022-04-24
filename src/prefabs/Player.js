@@ -4,7 +4,7 @@ class Player extends Phaser.GameObjects.Sprite{
     scene.add.existing(this);
     this.zones = zones;
     this.currentPos = [2, 7]; // Row (0-4), Column (0-22)
-    this.height = 0;
+    this.elevation = 0;
     this.currentAction = "forward";
     this.isDead = false;
   }
@@ -20,28 +20,36 @@ class Player extends Phaser.GameObjects.Sprite{
     let neighborTiles = this.getSurroundingTiles();
     // Moving will change the row and column of the player
     if(this.currentAction == "left"){
-      this.currentPos[0]--;
-      this.currentPos[1]--;
-      if (currentTile+1 == neighborTiles[0]) this.height++;
-      if (currentTile-1 == neighborTiles[0]) this.height--;
+      if (currentTile+1 == neighborTiles[0]) this.elevation++;
+      if (currentTile-1 == neighborTiles[0]) this.elevation--;
+      if (!(currentTile+2 == neighborTiles[0])){
+        this.currentPos[0]--;
+        this.currentPos[1]--;
+      }
     }
     if(this.currentAction == "right"){
-      this.currentPos[0]++;
-      this.currentPos[1]--;
-      if (currentTile+1 == neighborTiles[2]) this.height++;
-      if (currentTile-1 == neighborTiles[2]) this.height--;
+      if (currentTile+1 == neighborTiles[2]) this.elevation++;
+      if (currentTile-1 == neighborTiles[2]) this.elevation--;
+      if (!(currentTile+2 == neighborTiles[2])){
+        this.currentPos[0]++;
+        this.currentPos[1]--;
+      }
+      
     }
     if(this.currentAction == "forward"){
-      if (currentTile+1 == neighborTiles[1]) this.height++;
-      if (currentTile-1 == neighborTiles[1]) this.height--;
+      if (currentTile+1 == neighborTiles[1]) this.elevation++;
+      if (currentTile-1 == neighborTiles[1]) this.elevation--;
+      if (currentTile+2 == neighborTiles[1]) this.currentPos[1]--;
+      if (currentTile-2 == neighborTiles[1]) this.elevation -= 2;
     }
 
     // After changing the row/column of player, convert it into game coordinates
     let coords = this.gridToCoords();
     this.x = coords[0];
-    this.y = coords[1] - (32*this.height);
+    this.y = coords[1] - (32*this.elevation);
 
-    this.setDepth(this.calculateDepth() + (this.height*5));
+    this.setDepth(this.calculateDepth() + (this.elevation*5));
+    this.anims.play('rotateForward');
     this.reset();
     this.checkOutOfBounds();
   }
@@ -75,7 +83,7 @@ class Player extends Phaser.GameObjects.Sprite{
     let column = this.currentPos[1];
     // These are the coordinates for the very first row/column;
     let x = -48;
-    let y = 400;
+    let y = 432;
     for(let i=0; i < row; i++){
       x += 32;
       y += 16;

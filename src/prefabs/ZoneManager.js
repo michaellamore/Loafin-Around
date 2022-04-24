@@ -1,15 +1,8 @@
 class ZoneManager{
   constructor(){
     this.zones = [];
-    this.prevIndex = 1;
+    this.prevKey;
   }
-  /* 
-    TODO:
-    - Add more zones to template
-    - (if there's time) Add "speed up" zones that add points and let the player move up a space
-    - (if there's time) Switch to a YAML format instead of JSON for better readability
-  */
-
 
   create(){
     if(this.zones.length > 0) return console.error("Zones already exist");
@@ -28,20 +21,26 @@ class ZoneManager{
       // zone.push(this.generateNewNumber(prevNum));
     }
     // If there aren't enough zones, create new ones
-    if(this.zones[0].length < 23) this.addObstaclesFromTemplate();
+    if(this.zones[0].length < 23) this.addObstaclesFromYAML();
     this.zonesToConsole();
   }
 
-  addObstaclesFromTemplate(){
-    let randomIndex = Math.floor(Math.random() * numOfObstacles);
-    // If it's the same index as before, get a new index
-    if(randomIndex == this.prevIndex) return this.addObstaclesFromTemplate();
-    this.prevIndex = randomIndex;
-
-    let newZones = availableObstacles[randomIndex];
-    for(let row = 0; row < newZones.length; row++){
-      for(const digit of newZones[row]) this.zones[row].push(parseInt(digit));
-      // Add a little buffer after every obstacle
+  addObstaclesFromYAML(){
+    let zone;
+    if(templateObstacles["ObstacleTest"] != null){
+      let key = templateObstacles["ObstacleTest"]
+      zone = templateObstacles[key];
+    } 
+    if(templateObstacles["ObstacleTest"] == null){
+      const keys = Object.keys(templateObstacles);
+      let randomKey =  keys[Math.floor(Math.random() * keys.length)];
+      if(randomKey == "ObstacleTest" || randomKey == this.prevIndex) return this.addObstaclesFromYAML();
+      this.prevKey = randomKey;
+      zone = templateObstacles[randomKey];
+    }
+    for(let row=0; row<zone.length; row++){
+      let array = zone[row].split(", ");
+      for(const digit of array) this.zones[row].push(parseInt(digit));
       this.zones[row].push(0, 0, 0);
     }
   }
