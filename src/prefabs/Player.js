@@ -62,7 +62,6 @@ class Player extends Phaser.GameObjects.Sprite{
         }
       }  
     }
-    console.log(this.elevation);
     // Make sure player is re-aligned before moving again
     if(this.targetPos != null && this.x != this.targetPos[0]) this.x = this.targetPos[0];
     if(this.targetPos != null && this.y != this.targetPos[1]) this.y = this.targetPos[1];

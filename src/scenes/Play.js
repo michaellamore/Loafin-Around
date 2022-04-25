@@ -26,7 +26,7 @@ class Play extends Phaser.Scene {
     keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
     keyAction = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 
-    this.platform = this.add.image(0, 0, 'platform').setOrigin(0, 0).setDepth(-10);
+    this.platform = new Background(this, -16, game.config.height + 96, 'platform', 0, this.spriteSpeed);
     this.scoreText = this.add.text(game.config.width/2, 64, this.score, this.scoreConfig).setOrigin(0.5);
     this.generateAnimations();
 
@@ -51,6 +51,10 @@ class Play extends Phaser.Scene {
           obstacle.updateVariables();
         }
         for(const speedup of this.speedupArray){
+          if(speedup.currentPos[0] == this.player.currentPos[0] &&
+            speedup.currentPos[1] == this.player.currentPos[1]) {
+            speedup.destroy();
+          }
           speedup.tryToDestroy();
           speedup.updateVariables();
         }
@@ -64,6 +68,7 @@ class Play extends Phaser.Scene {
           collectable.tryToDestroy();
           collectable.updateVariables();
         }
+        this.platform.changeTarget();
         this.createNewEntities();
         this.player.checkMovement();
         this.addScore(10);
@@ -87,9 +92,8 @@ class Play extends Phaser.Scene {
     // delta is the amount of time in-between update() calls. 
     for(const obstacle of this.obstaclesArray) obstacle.move(delta/1000); // Convert delta to milliseconds
     for(const speedup of this.speedupArray) speedup.move(delta/1000);
-    for(const collectable of this.collectableArray){
-      collectable.move(delta/1000);
-    }
+    for(const collectable of this.collectableArray) collectable.move(delta/1000);
+    this.platform.move(delta/1000);
 
     this.player.move(delta/1000);
     this.player.getInput();
@@ -106,12 +110,14 @@ class Play extends Phaser.Scene {
       // Offset includes x and y values in array. Different offsets for different zones. Zones 0-4. 
       let offset = [80-(32*row) , 448 + (16*row)];
 
+      let randomSprite = spriteNames[Math.floor(Math.random() * spriteNames.length)];
+      let randomSprite2 = spriteNames[Math.floor(Math.random() * spriteNames.length)];
       // If current point is 1, add a 1-cube-tall sprite
-      if(tile == 1) this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column), 'obstacle', 0, this.spriteSpeed, row, 0));
+      if(tile == 1) this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column), 'spriteAtlas', randomSprite, this.spriteSpeed, row, 0));
       // if current point is 2, add 2 1-cube-tall sprites on top of each other
       if(tile == 2){
-        this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column), 'obstacle', 0, this.spriteSpeed, row, 0));
-        this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column) - 32, 'obstacle', 0, this.spriteSpeed, row, 1));
+        this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column), 'spriteAtlas', randomSprite, this.spriteSpeed, row, 0));
+        this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column) - 32, 'spriteAtlas', randomSprite2, this.spriteSpeed, row, 1));
       }
       // If it's a T, it's a teleport zone
       if(tile == 'T') this.speedupArray.push(new Speedzone(this, 32*(column)-offset[0] , offset[1]-16*(column), 'speedupZone', 0, this.spriteSpeed, row));
@@ -133,6 +139,7 @@ class Play extends Phaser.Scene {
     for(const obstacle of this.obstaclesArray) obstacle.movespeed = this.spriteSpeed;
     for(const speedup of this.speedupArray) speedup.movespeed = this.spriteSpeed;
     for(const collectable of this.collectableArray) collectable.movespeed = this.spriteSpeed;
+    this.platform.movespeed = this.spriteSpeed;
     this.player.movespeed = this.spriteSpeed;
     this.player.anims.timeScale += .25;
   }
@@ -152,6 +159,19 @@ class Play extends Phaser.Scene {
       key: 'rotateRight', 
       frames: this.anims.generateFrameNumbers('rotateRight', {start: 0, end: 10, first: 0}),
       frameRate: 30,
+    });
+
+    this.anims.create({
+      key: 'butter', 
+      frames: this.anims.generateFrameNumbers('collectable', {start: 0, end: 7, first: 0}),
+      frameRate: 10,
+      repeat: -1
+    });
+    this.anims.create({
+      key: 'jam', 
+      frames: this.anims.generateFrameNumbers('speedupZone', {start: 0, end: 7, first: 0}),
+      frameRate: 10,
+      repeat: -1
     });
   }
 }

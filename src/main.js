@@ -20,16 +20,21 @@ let config = {
 }
 // Load up JSON file that has all obstacles and set it to a global variable
 let templateObstacles;
+let spriteNames = [];
 async function loadResources(){
-  let obstacle = await fetch("./src/TemplateObstacles.yaml");
-  let obstacleText = await obstacle.text();
+  const obstacle = await fetch("./src/TemplateObstacles.yaml");
+  const obstacleText = await obstacle.text();
   templateObstacles = jsyaml.load(obstacleText);
+
+  const sprites = await fetch("./assets/spriteAtlas.json")
+  const spritesJSON = await sprites.json(); 
+  for(const name in spritesJSON.frames) spriteNames.push(name);
 }
 loadResources();
 
 let game = new Phaser.Game(config);
 
 let keyLeft, keyRight, keyAction;
-
+let highscore = 0;
 
 

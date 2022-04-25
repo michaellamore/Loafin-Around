@@ -3,16 +3,16 @@ class Speedzone extends Phaser.GameObjects.Sprite{
     super(scene, x, y, texture, frame);
     scene.add.existing(this);
     this.setOrigin(0.5);
+    this.anims.play('jam');
     this.currentPos = [row, 21];
-    this.targetPos;
-    this.elevation = 0;
+    this.targetPos = [x, y];
     this.movespeed = speed;
   }
 
   updateVariables(){
-    this.targetPos = [Math.floor(this.x - 32), Math.floor(this.y + 16)];
+    this.targetPos = [this.targetPos[0]-32, this.targetPos[1]+16];
     this.currentPos[1]--;
-    this.setDepth(this.calculateDepth()+ (this.elevation*5));
+    this.setDepth(this.calculateDepth() - 1);
   }
 
   tryToDestroy(){

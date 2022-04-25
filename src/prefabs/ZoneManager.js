@@ -22,7 +22,7 @@ class ZoneManager{
     }
     // If there aren't enough zones, create new ones
     if(this.zones[0].length < 23) this.addObstaclesFromYAML();
-    this.zonesToConsole();
+    //this.zonesToConsole();
   }
 
   addObstaclesFromYAML(){

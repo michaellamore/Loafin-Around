@@ -4,14 +4,14 @@ class Obstacle extends Phaser.GameObjects.Sprite{
     scene.add.existing(this);
     this.setOrigin(0.5);
     this.currentPos = [row, 21]; // X and Y based on a simple grid
-    this.targetPos;
+    this.targetPos = [x, y];
     this.elevation = elevation;
     this.movespeed = speed;
   }
 
   // Gets called every interval
   updateVariables(){
-    this.targetPos = [Math.floor(this.x - 32), Math.floor(this.y + 16)];
+    this.targetPos = [this.targetPos[0]-32, this.targetPos[1]+16];
     this.currentPos[1]--;
     this.setDepth(this.calculateDepth() + (this.elevation*5));
   }
