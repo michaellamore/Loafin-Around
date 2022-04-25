@@ -1,44 +1,84 @@
-ObstacleTest:  #Add the key of the obstacle you want to test
+ObstacleTest: null #Add the key of the obstacle you want to test. If not testing, put null
 
 # Each obstacle should have a unique key
+# 0 = Blank
+# 1 = 1-Tall Obstacle
+# 2 = 2-Tall Obstacle
+# T = Teleport Zone
+# C = Collectable
 obstacle1:
-  - 1, 1, 0
-  - 1, 0, 0
-  - 0, 0, 1
-  - 0, 0, 0
-  - 0, 1, 0
+  - C, 2
+  - T, 2
+  - C, 2
+  - T, 2
+  - C, 2
 
 obstacle2:
-  - 2, 1, 0
-  - 0, 0, 0
-  - 1, 2, 1
-  - 0, 0, 0
-  - 1, 0, 0
+  - T, C, T, C, T
+  - C, C, C, C, C
+  - 2, 2, 2, 2, 2
+  - C, C, C, C, C
+  - T, C, T, C, T
 
 obstacle3:
-  - 0, 1, 0
-  - 0, 0, 1
-  - 2, 1, 0
-  - 0, 0, 0
-  - 2, 2, 0
+  - 1, C, 0
+  - C, 0, 2
+  - 1, 1, T
+  - 0, C, 0
+  - C, 0, 2
 
 obstacle4:
-  - 1, 1, 0
-  - 0, 0, 0
-  - 1, 1, 1
-  - 0, 0, 0
-  - 1, 0, 0
+  - C, 0, 0
+  - 0, 0, C
+  - 0, C, 0
+  - C, 0, 0
+  - 0, 0, C
 
 obstacle5:
-  - 2, 0, 0
+  - T, 2, 0
   - 0, 0, 0
-  - 1, 2, 1
-  - 0, 0, 0
-  - 1, 0, 2
+  - 0, 2, 0
+  - 1, 2, 0
+  - C, C, T
 
 obstacle6:
-  - 0, 0, 1
-  - 0, 0, 1
-  - 1, 0, 0
-  - 0, 0, 0
-  - 1, 0, 0
+  - C, C
+  - T, 0
+  - C, C
+  - T, 0
+  - C, C
+
+obstacle7:
+  - C, 2, 2
+  - C, 2, 2
+  - C, 2, 2
+  - C, 2, 2
+  - 0, T, 2
+
+obstacle8:
+  - 0, T, 2
+  - C, 2, 2
+  - C, 2, 2
+  - C, 2, 2
+  - C, 2, 2
+
+obstacle9:
+  - C, 2, 2
+  - C, 2, 2
+  - 0, T, 2
+  - C, 2, 2
+  - C, 2, 2
+
+obstacle10:
+  - C, 2, 2
+  - 0, T, 2
+  - C, 2, 2
+  - C, 2, 2
+  - C, 2, 2
+
+obstacle11:
+  - C, 2, 2
+  - C, 2, 2
+  - C, 2, 2
+  - 0, T, 2
+  - C, 2, 2

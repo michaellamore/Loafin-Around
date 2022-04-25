@@ -6,8 +6,8 @@ let config = {
   pixelArt: true,
   zoom: 1,
   fps:{
-    target: 60,
-    forceSetTimeOut: true
+    // target: 60,
+    // forceSetTimeOut: true
   },
   physics: {
     default: 'arcade',
@@ -21,9 +21,9 @@ let config = {
 // Load up JSON file that has all obstacles and set it to a global variable
 let templateObstacles;
 async function loadResources(){
-  let yaml = await fetch("./src/TemplateObstacles.yaml")
-  let yamlText = await yaml.text();
-  templateObstacles = jsyaml.load(yamlText);
+  let obstacle = await fetch("./src/TemplateObstacles.yaml");
+  let obstacleText = await obstacle.text();
+  templateObstacles = jsyaml.load(obstacleText);
 }
 loadResources();
 

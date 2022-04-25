@@ -40,8 +40,10 @@ class ZoneManager{
     }
     for(let row=0; row<zone.length; row++){
       let array = zone[row].split(", ");
-      for(const digit of array) this.zones[row].push(parseInt(digit));
-      this.zones[row].push(0, 0, 0);
+      for(const digit of array) this.zones[row].push(digit);
+      let randomTile = 0;
+      if(Math.floor(Math.random()*10) == 1) randomTile = 'T';
+      this.zones[row].push(0, randomTile);
     }
   }
 

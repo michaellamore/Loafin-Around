@@ -1,20 +1,19 @@
-class Obstacle extends Phaser.GameObjects.Sprite{
-  constructor(scene, x, y, texture, frame, speed, row, elevation){
+class Collectable extends Phaser.GameObjects.Sprite{
+  constructor(scene, x, y, texture, frame, speed, row){
     super(scene, x, y, texture, frame);
     scene.add.existing(this);
-    this.setOrigin(0.5);
+    this.setOrigin(0.5, 0.5);
     this.currentPos = [row, 21]; // X and Y based on a simple grid
     this.targetPos;
-    this.elevation = elevation;
     this.movespeed = speed;
   }
 
-  // Gets called every interval
   updateVariables(){
     this.targetPos = [Math.floor(this.x - 32), Math.floor(this.y + 16)];
     this.currentPos[1]--;
-    this.setDepth(this.calculateDepth() + (this.elevation*5));
+    this.setDepth(this.calculateDepth());
   }
+
   tryToDestroy(){
     if(this.x < -100 && this.y > game.config.height+100){
       this.destroy();
@@ -23,7 +22,6 @@ class Obstacle extends Phaser.GameObjects.Sprite{
     return false;
   }
 
-  // Gets called every update()
   move(delta){
     if(this.targetPos == null) return;
     // If the obstacle hasn't reached the target, move towards it
@@ -35,17 +33,12 @@ class Obstacle extends Phaser.GameObjects.Sprite{
     if(this.y > this.targetPos[1]) this.y = this.targetPos[1];
   } 
 
-  moveOLD(){
-    this.x -= 32;
-    this.y += 16;
-  }
-
   calculateDepth(){
     let row = this.currentPos[0];
     let column = this.currentPos[1];
     let depth = 111; // Arbitrary number
     for(let i=0; i < row; i++) depth += 1;
     for(let i=0; i < column; i++) depth -= 5;
-    return depth;
+    return depth-1;
   }
 }
