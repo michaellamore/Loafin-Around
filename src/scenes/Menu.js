@@ -104,19 +104,7 @@ class Menu extends Phaser.Scene {
       loop: true,
       callbackScope: this
     })
-
-    // If using mobile
-    if(is_touch){
-      this.text1.text = `Touch the (left/right) to Move`
-      this.text2.text = `Touch anywhere to Start`
-
-      this.touchzone = this.add.zone(0, 0, game.config.width, game.config.height).setOrigin(0, 0);
-      this.touchzone.setScrollFactor(0);
-    }
-    this.touchzone.on('pointerdown', function(){
-      this.scene.start('playScene');
-      this.sound.play('sfx_menu');
-    }, this);
+    this.touchzone = null;
   }
 
   update(time, delta){
@@ -126,6 +114,19 @@ class Menu extends Phaser.Scene {
     if(keyAction.isDown){
       this.scene.start('playScene');
       this.sound.play('sfx_menu'); 
+    }
+
+    // If using mobile
+    if(is_touch && this.touchzone == null){
+      this.text1.text = `Touch the (left/right) to Move`
+      this.text2.text = `Touch anywhere to Start`
+
+      this.touchzone = this.add.zone(0, 0, game.config.width, game.config.height).setOrigin(0, 0);
+      this.touchzone.setScrollFactor(0);
+      this.touchzone.on('pointerdown', function(){
+        this.scene.start('playScene');
+        this.sound.play('sfx_menu');
+      }, this);
     }
   }
 

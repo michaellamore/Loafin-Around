@@ -1,10 +1,10 @@
 @font-face{
-  font-family: 'Coolvetica';
+  font-family: 'Coolvetica', Helvetica, sans-serif;
   src: url('../assets/coolvetica.otf');
 }
 
 @font-face{
-  font-family: 'Upheavtt';
+  font-family: 'Upheavtt', Helvetica, sans-serif;
   src: url('../assets/upheavtt.ttf');
 }
 
@@ -28,6 +28,7 @@ body{
   font-size: 60px;
   letter-spacing: 0.1em;
   text-align: center;
+  font-family: 'Upheavtt';
 }
 
 h3{ 
