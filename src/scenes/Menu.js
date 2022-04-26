@@ -85,8 +85,8 @@ class Menu extends Phaser.Scene {
       "Let's grow mold together"
     ];
     this.add.image(0, 0, 'title').setOrigin(0, 0);
-    this.add.text(game.config.width/2, game.config.height/2 + 128, 'Use (A)(D) to Move', this.textConfig).setOrigin(0.5);
-    this.add.text(game.config.width/2, game.config.height/2 + 180, 'Press (F) to Start', this.textConfig).setOrigin(0.5);
+    this.text1 = this.add.text(game.config.width/2, game.config.height/2 + 128, 'Use (A)(D) to Move', this.textConfig).setOrigin(0.5);
+    this.text2 = this.add.text(game.config.width/2, game.config.height/2 + 180, 'Press (F) to Start', this.textConfig).setOrigin(0.5);
     this.currentPun = this.getRandomPun();
     this.pun = this.add.text(game.config.width/2 + 190, 60, this.currentPun, this.punConfig).setOrigin(0.5);
     this.pun.angle = 20;
@@ -94,7 +94,7 @@ class Menu extends Phaser.Scene {
     // Increasing and decreasing scale of pun text
     this.increasing = true;
     this.timer2 = this.time.addEvent({
-      delay: 100, 
+      delay: 200, 
       callback: function() {
         if(parseInt(this.pun.style.fontSize) <= 16) this.increasing = true;
         if(parseInt(this.pun.style.fontSize) >= 20) this.increasing = false;
@@ -104,6 +104,19 @@ class Menu extends Phaser.Scene {
       loop: true,
       callbackScope: this
     })
+
+    // If using mobile
+    if(is_touch){
+      this.text1.text = `Touch the (left/right) to Move`
+      this.text2.text = `Touch anywhere to Start`
+
+      this.touchzone = this.add.zone(0, 0, game.config.width, game.config.height).setOrigin(0, 0);
+      this.touchzone.setScrollFactor(0);
+    }
+    this.touchzone.on('pointerdown', function(){
+      this.scene.start('playScene');
+      this.sound.play('sfx_menu');
+    }, this);
   }
 
   update(time, delta){

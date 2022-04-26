@@ -18,6 +18,10 @@ let config = {
   },
   scene: [Menu, Play, Gameover]
 }
+// Check if using a phone
+let is_touch = false;
+window.addEventListener('touchstart', function(){ is_touch = true; });
+
 // Load up JSON file that has all obstacles and set it to a global variable
 let templateObstacles;
 let spriteNames = [];
@@ -31,6 +35,8 @@ async function loadResources(){
   for(const name in spritesJSON.frames) spriteNames.push(name);
 }
 loadResources();
+
+
 
 let game = new Phaser.Game(config);
 
