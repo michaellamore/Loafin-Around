@@ -2,6 +2,7 @@ class Player extends Phaser.GameObjects.Sprite{
   constructor(scene, x, y, texture, frame, speed, zones){
     super(scene, x, y, texture, frame);
     scene.add.existing(this);
+    this.scene = scene;
     this.zones = zones;
     this.currentPos = [2, 7]; // Row (0-4), Column (0-22)
     this.targetPos;
@@ -55,6 +56,7 @@ class Player extends Phaser.GameObjects.Sprite{
       } else {
         if(neighborTiles[1]-2 == this.elevation){
           this.currentPos[1]--;
+          this.scene.sound.play('sfx_blocked');
         } else {
           if(neighborTiles[1]==2 || neighborTiles[1]==1 || neighborTiles[1]==0) this.elevation = neighborTiles[1];
           if(neighborTiles[1]=='T' || neighborTiles[1]=='C') this.elevation = 0;

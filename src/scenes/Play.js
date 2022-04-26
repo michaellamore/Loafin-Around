@@ -6,7 +6,7 @@ class Play extends Phaser.Scene {
   preload(){
     this.scoreConfig = {
       fontFamily: 'Upheavtt',
-      fontSize: '28px',
+      fontSize: '40px',
       color: '#FFFFFF',
       align: 'left',
       stroke: '#10141f',
@@ -15,7 +15,6 @@ class Play extends Phaser.Scene {
   }
 
   create() {
-    console.log("In Play Scene");
     // VARIABLES
     this.score = 0;
     this.timerDelay = 1000;
@@ -27,7 +26,7 @@ class Play extends Phaser.Scene {
     keyAction = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 
     this.platform = new Background(this, -16, game.config.height + 96, 'platform', 0, this.spriteSpeed);
-    this.scoreText = this.add.text(game.config.width/2, 64, this.score, this.scoreConfig).setOrigin(0.5);
+    this.scoreText = this.add.text(game.config.width/2, 30, this.score, this.scoreConfig).setOrigin(0.5);
     this.generateAnimations();
 
     // Zone Stuff
@@ -53,6 +52,7 @@ class Play extends Phaser.Scene {
         for(const speedup of this.speedupArray){
           if(speedup.currentPos[0] == this.player.currentPos[0] &&
             speedup.currentPos[1] == this.player.currentPos[1]) {
+              if(speedup.scene != undefined) this.sound.play('sfx_speedup');
             speedup.destroy();
           }
           speedup.tryToDestroy();
@@ -63,6 +63,7 @@ class Play extends Phaser.Scene {
           if(collectable.currentPos[0] == this.player.currentPos[0] &&
             collectable.currentPos[1] == this.player.currentPos[1]) {
             this.addScore(50);
+            if(collectable.scene != undefined) this.sound.play('sfx_pickup'); 
             collectable.destroy();
           }
           collectable.tryToDestroy();
@@ -94,11 +95,10 @@ class Play extends Phaser.Scene {
     for(const speedup of this.speedupArray) speedup.move(delta/1000);
     for(const collectable of this.collectableArray) collectable.move(delta/1000);
     this.platform.move(delta/1000);
-
     this.player.move(delta/1000);
     this.player.getInput();
 
-    if(this.player.isDead) this.scene.start("gameoverScene");
+    if(this.player.isDead) this.scene.start("gameoverScene", {score: this.score}); // Send score data to next scene to calculate highscore
   }
 
   // Responsible for spawning in obstacles AND speed up zones
@@ -132,7 +132,6 @@ class Play extends Phaser.Scene {
   }
 
   incrementSpeed(){
-    console.log("Incrementing Speed");
     this.timer.delay -= 200;
     this.timer2.delay += 15000;
     this.spriteSpeed += 20;

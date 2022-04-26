@@ -7,7 +7,7 @@ class Background extends Phaser.GameObjects.Sprite{
     this.startPos = [x, y];
     this.targetPos = [x, y];
     this.movespeed = speed;
-    this.cutoffPos = [-208, 672]; // Depends on dimensions of image;
+    this.cutoffPos = [-1520, 1328]; // Depends on dimensions of image;
   }
 
   changeTarget(){
