@@ -1,73 +1,10 @@
-@font-face{
-  font-family: 'Coolvetica', Helvetica, sans-serif;
-  src: url('../assets/coolvetica.otf');
-}
-
-@font-face{
-  font-family: 'Upheavtt', Helvetica, sans-serif;
-  src: url('../assets/upheavtt.ttf');
-}
-
-canvas{
-  display: block;
-  margin: 94px auto;
-  border: solid #341c27 5px;
-  border-radius: 20px;
+@font-face {
+  font-family: 'PixelFont';
+  src: url('../assets/Lamore-Pixel-Font.ttf');
+  font-display: swap;
 }
 
 body{
-  margin: 0 auto;
-  padding: 0;
-  font-family: 'Coolvetica';
-  background-color: #4d2b32;
-  color: white;
-}
-
-.title{
-  padding: 80px auto;
-  font-size: 60px;
-  letter-spacing: 0.1em;
-  text-align: center;
-  font-family: 'Upheavtt';
-}
-
-h3{ 
-  width: 1000px;
-  font-size: 30px;
-  letter-spacing: 0.1em;
-  text-align: center;
-}
-
-.container-large{
-  background-color: #341c27;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: space-around;
-}
-
-.container-small{
-  display: flex;
-  font-size: 30px;
-  justify-content: space-around;
-  align-items: center;
-
-  background-color: #151d28;
-  border-radius: 20px;
-}
-
-p{
-  width: 600px;
-  margin-left: 300px;
-}
-
-img{
-  width: 400px;
-  height: auto;
-  margin-right: 300px;
-  object-fit: contain;
-
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
+  margin: 0 0;
+  padding: 0 0;
 }

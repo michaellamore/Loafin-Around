@@ -5,7 +5,7 @@ class Play extends Phaser.Scene {
 
   preload(){
     this.scoreConfig = {
-      fontFamily: 'Upheavtt',
+      fontFamily: 'PixelFont',
       fontSize: '40px',
       color: '#FFFFFF',
       align: 'left',
@@ -19,25 +19,41 @@ class Play extends Phaser.Scene {
     this.score = 0;
     this.timerDelay = 1000;
     this.spriteSpeed = 80;
-    
-    // Set the keys
-    keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-    keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-    keyAction = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-
-    this.platform = new Background(this, -16, game.config.height + 96, 'platform', 0, this.spriteSpeed);
-    this.scoreText = this.add.text(game.config.width/2, 30, this.score, this.scoreConfig).setOrigin(0.5);
-    this.generateAnimations();
 
     // Zone Stuff
     this.zoneManager = new ZoneManager();
     this.zoneManager.create();
     this.zoneManager.moveZones();
 
-    // Obstacles & Speed up zones
-    this.obstaclesArray = [];
-    this.speedupArray = [];
-    this.collectableArray = [];
+    this.player = new Player(this, 240, 352, 'rotateForward', 0, this.spriteSpeed, this.zoneManager.zones).setOrigin(0.5);
+
+    // Groups for obstacles, jam, butter, etc. 
+    this.obstacleGroup = this.add.group();
+    this.butterGroup = this.add.group();
+    this.jamGroup = this.add.group();
+
+    // Collisions
+    this.physics.add.collider(this.player, this.jamGroup, this.handleCollision, null, this);
+    this.physics.add.collider(this.player, this.butterGroup, this.handleCollision, null, this);
+    
+    // Set the keys and zones (for mobile)
+    keyLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    keyRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    keyUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    keyDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    keyAction = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+    this.zoneLeft = this.add.zone(0, 0, game.config.width*0.45, game.config.height).setOrigin(0).setInteractive();
+    this.zoneRight = this.add.zone(game.config.width-(game.config.width*0.45), 0, game.config.width*0.45, game.config.height).setOrigin(0).setInteractive();
+    this.zoneLeft.on('pointerdown', () => {
+      if(this.player.currentPos[0] > 0) this.player.currentAction = "left";
+    }, this);
+    this.zoneRight.on('pointerdown', () => {
+      if(this.player.currentPos[0] < 4) this.player.currentAction = "right";
+    }, this);
+    this.player.currentAction = "forward"; // set it to forward in-case it was accidently changed
+
+    this.platform = new Background(this, -16, game.config.height + 96, 'platform', 0, this.spriteSpeed);
+    this.scoreText = this.add.text(game.config.width/2, 30, this.score, this.scoreConfig).setOrigin(0.5);
     this.createNewEntities();
 
     // Interval to do things on
@@ -45,34 +61,24 @@ class Play extends Phaser.Scene {
       delay: this.timerDelay, 
       callback: function() {
         this.zoneManager.moveZones();
-        for(const obstacle of this.obstaclesArray){
+        Phaser.Actions.Call(this.obstacleGroup.getChildren(), (obstacle)=>{ 
+          obstacle.updateVariables(); 
           obstacle.tryToDestroy();
-          obstacle.updateVariables();
-        }
-        for(const speedup of this.speedupArray){
-          if(speedup.currentPos[0] == this.player.currentPos[0] &&
-            speedup.currentPos[1] == this.player.currentPos[1]) {
-              if(speedup.scene != undefined) this.sound.play('sfx_speedup');
-            speedup.destroy();
-          }
-          speedup.tryToDestroy();
-          speedup.updateVariables();
-        }
-        for(const collectable of this.collectableArray){
-          // Check for collision with player
-          if(collectable.currentPos[0] == this.player.currentPos[0] &&
-            collectable.currentPos[1] == this.player.currentPos[1]) {
-            this.addScore(50);
-            if(collectable.scene != undefined) this.sound.play('sfx_pickup'); 
-            collectable.destroy();
-          }
-          collectable.tryToDestroy();
-          collectable.updateVariables();
-        }
+        });
+        Phaser.Actions.Call(this.jamGroup.getChildren(), (jam)=>{ 
+          jam.updateVariables();
+          jam.tryToDestroy(); 
+        });
+        Phaser.Actions.Call(this.butterGroup.getChildren(), (butter)=>{ 
+          butter.updateVariables(); 
+          butter.tryToDestroy();
+        });
+
         this.platform.changeTarget();
         this.createNewEntities();
         this.player.checkMovement();
         this.addScore(10);
+        // console.log(Math.floor(game.loop.actualFps));
       },
       loop: true,
       callbackScope: this
@@ -85,15 +91,14 @@ class Play extends Phaser.Scene {
       callbackScope: this,
       repeat: 2
     });
-
-    this.player = new Player(this, 240, 352, 'rotateForward', 0, this.spriteSpeed, this.zoneManager.zones).setOrigin(0.5);
   }
 
   update(time, delta){
     // delta is the amount of time in-between update() calls. 
-    for(const obstacle of this.obstaclesArray) obstacle.move(delta/1000); // Convert delta to milliseconds
-    for(const speedup of this.speedupArray) speedup.move(delta/1000);
-    for(const collectable of this.collectableArray) collectable.move(delta/1000);
+    Phaser.Actions.Call(this.obstacleGroup.getChildren(), (obstacle)=>{ obstacle.move(delta/1000); });
+    Phaser.Actions.Call(this.jamGroup.getChildren(), (jam)=>{ jam.move(delta/1000); });
+    Phaser.Actions.Call(this.butterGroup.getChildren(), (butter)=>{ butter.move(delta/1000); });
+    
     this.platform.move(delta/1000);
     this.player.move(delta/1000);
     this.player.getInput();
@@ -101,29 +106,60 @@ class Play extends Phaser.Scene {
     if(this.player.isDead) this.scene.start("gameoverScene", {score: this.score}); // Send score data to next scene to calculate highscore
   }
 
-  // Responsible for spawning in obstacles AND speed up zones
+  // Responsible for spawning in obstacles, jam, and butter
   createNewEntities(){
     let zones = this.zoneManager.zones
     let column = 22;
     for (let row = 0; row <= 4; row++) {
       let tile = zones[row][column];
-      // Offset includes x and y values in array. Different offsets for different zones. Zones 0-4. 
+      let array = Array.from(tile);
       let offset = [80-(32*row) , 448 + (16*row)];
-
-      let randomSprite = spriteNames[Math.floor(Math.random() * spriteNames.length)];
-      let randomSprite2 = spriteNames[Math.floor(Math.random() * spriteNames.length)];
-      // If current point is 1, add a 1-cube-tall sprite
-      if(tile == 1) this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column), 'spriteAtlas', randomSprite, this.spriteSpeed, row, 0));
-      // if current point is 2, add 2 1-cube-tall sprites on top of each other
-      if(tile == 2){
-        this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column), 'spriteAtlas', randomSprite, this.spriteSpeed, row, 0));
-        this.obstaclesArray.push(new Obstacle(this, 32*(column)-offset[0] , offset[1]-16*(column) - 32, 'spriteAtlas', randomSprite2, this.spriteSpeed, row, 1));
+      for(let i=0; i < array.length; i++){
+        let element = array[i];
+        let randomSprite = spriteNames[Math.floor(Math.random() * spriteNames.length)];
+        // If current point is 1, add a 1-cube-tall sprite
+        if(element == "1"){
+          if(!this.obstacleGroup.isFull()){
+            let obstacle = new Sprite(this, 32*(column)-offset[0] , offset[1]-16*(column), 'spriteAtlas', randomSprite,'obstacle', this.spriteSpeed, row, 0);
+            this.obstacleGroup.add(obstacle);
+          } else {
+            // If the obstacleGroup is full, start pooling instead of destroying/making new sprites
+            return;
+          }
+        }
+        // if current point is 2, add 2 1-cube-tall sprites on top of each other
+        if(element == "2"){
+          let obstacle1 = new Sprite(this, 32*(column)-offset[0] , offset[1]-16*(column), 'spriteAtlas', randomSprite,'obstacle', this.spriteSpeed, row, 0);
+          let obstacle2 = new Sprite(this, 32*(column)-offset[0] , offset[1]-16*(column), 'spriteAtlas', randomSprite,'obstacle', this.spriteSpeed, row, 1);
+          this.obstacleGroup.add(obstacle1);
+          this.obstacleGroup.add(obstacle2);
+        }
+        // If it's a T, it's a teleport zone
+        if(element == 'T'){
+          let jam = new Sprite(this, 32*(column)-offset[0] , offset[1]-16*(column), 'speedupZone', 0,'jam', this.spriteSpeed, row, i);
+          this.jamGroup.add(jam);
+        }
+        // If current point is C, spawn collectables
+        if(element == 'C'){
+          let butter = new Sprite(this, 32*(column)-offset[0] , offset[1]-16*(column) + 8, 'collectable', 0,'butter', this.spriteSpeed, row, i);
+          this.butterGroup.add(butter);
+        }
       }
-      // If it's a T, it's a teleport zone
-      if(tile == 'T') this.speedupArray.push(new Speedzone(this, 32*(column)-offset[0] , offset[1]-16*(column), 'speedupZone', 0, this.spriteSpeed, row));
-      // If current point is C, spawn collectables
-      if(tile == 'C')this.collectableArray.push(new Collectable(this, 32*(column)-offset[0] , offset[1]-16*(column) + 8, 'collectable', 0, this.spriteSpeed, row));
+      // Offset includes x and y values in array. Different offsets for different zones. Zones 0-4. 
+      
     }
+  }
+  handleCollision(player, sprite){
+    if(sprite.type == 'obstacle') return;
+    if(sprite.type == 'butter'){
+      this.addScore(50);
+      this.sound.play('sfx_pickup');
+    }
+    if(sprite.type == 'jam'){
+      player.speedup();
+      this.sound.play('sfx_speedup');
+    }
+    sprite.turnOff();
   }
 
   addScore(score){
@@ -132,45 +168,16 @@ class Play extends Phaser.Scene {
   }
 
   incrementSpeed(){
+    this.player.anims.timeScale += .25;
     this.timer.delay -= 200;
     this.timer2.delay += 15000;
     this.spriteSpeed += 20;
-    for(const obstacle of this.obstaclesArray) obstacle.movespeed = this.spriteSpeed;
-    for(const speedup of this.speedupArray) speedup.movespeed = this.spriteSpeed;
-    for(const collectable of this.collectableArray) collectable.movespeed = this.spriteSpeed;
+
+    Phaser.Actions.Call(this.obstacleGroup.getChildren(), (obstacle)=>{ obstacle.movespeed = this.spriteSpeed });
+    Phaser.Actions.Call(this.jamGroup.getChildren(), (jam)=>{ jam.movespeed = this.spriteSpeed });
+    Phaser.Actions.Call(this.butterGroup.getChildren(), (butter)=>{ butter.movespeed = this.spriteSpeed });
+  
     this.platform.movespeed = this.spriteSpeed;
     this.player.movespeed = this.spriteSpeed;
-    this.player.anims.timeScale += .25;
-  }
-
-  generateAnimations(){
-    this.anims.create({
-      key: 'rotateForward', 
-      frames: this.anims.generateFrameNumbers('rotateForward', {start: 0, end: 10, first: 0}),
-      frameRate: 30,
-    });
-    this.anims.create({
-      key: 'rotateLeft', 
-      frames: this.anims.generateFrameNumbers('rotateLeft', {start: 0, end: 10, first: 0}),
-      frameRate: 30,
-    });
-    this.anims.create({
-      key: 'rotateRight', 
-      frames: this.anims.generateFrameNumbers('rotateRight', {start: 0, end: 10, first: 0}),
-      frameRate: 30,
-    });
-
-    this.anims.create({
-      key: 'butter', 
-      frames: this.anims.generateFrameNumbers('collectable', {start: 0, end: 7, first: 0}),
-      frameRate: 10,
-      repeat: -1
-    });
-    this.anims.create({
-      key: 'jam', 
-      frames: this.anims.generateFrameNumbers('speedupZone', {start: 0, end: 7, first: 0}),
-      frameRate: 10,
-      repeat: -1
-    });
   }
 }

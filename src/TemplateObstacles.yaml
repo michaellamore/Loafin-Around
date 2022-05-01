@@ -1,6 +1,7 @@
-ObstacleTest: null #Add the key of the obstacle you want to test. If not testing, put null
+ObstacleTest: obstacle3 #Add the key of the obstacle you want to test. If not testing, put null
 
 # Each obstacle should have a unique key
+# YOU CAN STACK (T/C) ON (1/2), BUT NOT (T/C) ON (T/C) OR (1/2) ON (1/2)
 # 0 = Blank
 # 1 = 1-Tall Obstacle
 # 2 = 2-Tall Obstacle
@@ -21,11 +22,11 @@ obstacle2:
   - T, C, T, C, T
 
 obstacle3:
-  - 1, C, 0
-  - C, 0, 2
-  - 1, 1, T
-  - 0, C, 0
-  - C, 0, 2
+  - 1C, C, 0, 0
+  - C, 0, 2, 0
+  - 1, 1, T, 0
+  - 0, C, 0, 0
+  - C, T, 2, 0
 
 obstacle4:
   - C, 0, 0

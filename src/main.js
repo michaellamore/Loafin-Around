@@ -1,5 +1,5 @@
 let config = {
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   width: 640,
   height: 480,
   parent: "phaser-canvas",
@@ -13,10 +13,10 @@ let config = {
     default: 'arcade',
     arcade: {
       gravity: {y: 0},
-      debug: false
+      debug: true
     }
   },
-  scene: [Menu, Play, Gameover]
+  scene: [Input, Menu, Instructions, Play, Gameover]
 }
 // Check if using a phone
 let is_touch = false;
@@ -40,7 +40,7 @@ loadResources();
 
 let game = new Phaser.Game(config);
 
-let keyLeft, keyRight, keyAction;
+let keyLeft, keyRight, keyUp, keyDown, keyAction;
 let highscore = 0;
 
 

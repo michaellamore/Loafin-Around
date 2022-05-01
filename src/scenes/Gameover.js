@@ -7,7 +7,7 @@ class Gameover extends Phaser.Scene {
 
   preload(){
     this.textConfig = {
-      fontFamily: 'Upheavtt',
+      fontFamily: 'PixelFont',
       fontSize: '28px',
       color: '#FFFFFF',
       stroke: '#10141f',
@@ -20,7 +20,7 @@ class Gameover extends Phaser.Scene {
       fixedWidth: 0
     }
   this.scoreConfig = {
-    fontFamily: 'Upheavtt',
+    fontFamily: 'PixelFont',
     fontSize: '28px',
     color: '#4f8fba',
     stroke: '#10141f',
