@@ -1,5 +1,5 @@
 let config = {
-  type: Phaser.CANVAS,
+  type: Phaser.AUTO,
   width: 640,
   height: 480,
   parent: "phaser-canvas",
@@ -13,7 +13,7 @@ let config = {
     default: 'arcade',
     arcade: {
       gravity: {y: 0},
-      debug: true
+      debug: false
     }
   },
   scene: [Input, Menu, Instructions, Play, Gameover]

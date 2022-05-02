@@ -16,8 +16,10 @@ class Menu extends Phaser.Scene {
 
   create() {
     this.pointer = this.input.activePointer;
-    this.playButton = this.add.sprite(0, 80, 'menuPlay').setOrigin(0).setInteractive().setTint(0x7d7d7d);
-    this.instructionButton = this.add.sprite(0, 200, 'menuInstructions').setOrigin(0).setInteractive().setTint(0x7d7d7d);;
+    this.playButton = this.add.sprite(0, 80, 'menuPlay').setOrigin(0).setInteractive();
+    this.playButton.setTint(0x7d7d7d);
+    this.instructionButton = this.add.sprite(0, 200, 'menuInstructions').setOrigin(0).setInteractive();
+    this.instructionButton.setTint(0x7d7d7d);
 
     // On mouse input, do stuff
     this.playButton.on("pointerover", () => {

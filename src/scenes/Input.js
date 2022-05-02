@@ -9,6 +9,8 @@ class Input extends Phaser.Scene {
     this.load.image('platform', 'platform.png');
     this.load.image('title', 'title.png');
     this.load.image('darkenBG', 'darkenBG.png');
+    this.load.image('slideObstacle', 'slideobstacle.png');
+    this.load.image('hole', 'hole.png');
     this.load.atlas('spriteAtlas', 'spriteAtlas.png', 'spriteAtlas.json');
     // Animations
     this.load.spritesheet('menuPlay', 'menuPlay.png', {frameWidth: 320, frameHeight: 160});
@@ -18,6 +20,8 @@ class Input extends Phaser.Scene {
     this.load.spritesheet('instructionCollectable', 'collectableSheet.png', {frameWidth: 640, frameHeight: 480});
     this.load.spritesheet('collectable', 'butter.png', {frameWidth: 32, frameHeight: 32});
     this.load.spritesheet('speedupZone', 'jam.png', {frameWidth: 64, frameHeight: 64});
+    this.load.spritesheet('slide', 'breadSlide.png', {frameWidth: 64, frameHeight: 64});
+    this.load.spritesheet('jump', 'breadJump.png', {frameWidth: 64, frameHeight: 64});
     this.load.spritesheet('rotateForward', 'breadForward.png', {frameWidth: 64, frameHeight: 64});
     this.load.spritesheet('rotateLeft', 'breadLeft.png', {frameWidth: 64, frameHeight: 64});
     this.load.spritesheet('rotateRight', 'breadRight.png', {frameWidth: 64, frameHeight: 64});
@@ -76,6 +80,7 @@ class Input extends Phaser.Scene {
       frameRate: 2,
       repeat: -1
     });
+
     this.anims.create({
       key: 'rotateForward', 
       frames: this.anims.generateFrameNumbers('rotateForward', {start: 0, end: 10, first: 0}),
@@ -89,6 +94,16 @@ class Input extends Phaser.Scene {
     this.anims.create({
       key: 'rotateRight', 
       frames: this.anims.generateFrameNumbers('rotateRight', {start: 0, end: 10, first: 0}),
+      frameRate: 30,
+    });
+    this.anims.create({
+      key: 'jump', 
+      frames: this.anims.generateFrameNumbers('jump', {start: 0, end: 0, first: 0}),
+      frameRate: 30,
+    });
+    this.anims.create({
+      key: 'slide', 
+      frames: this.anims.generateFrameNumbers('slide', {start: 0, end: 0, first: 0}),
       frameRate: 30,
     });
 
